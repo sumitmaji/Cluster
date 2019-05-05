@@ -1,1 +1,3 @@
-print("Hello World!!!!!")
+import os
+print(os.curdir)
+print("Hello World!!!")
