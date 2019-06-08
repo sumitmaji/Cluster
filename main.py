@@ -87,3 +87,10 @@ content.split(',')
 with open('cloud.txt','w') as f:
     f.write(content)
     
+
+
+"""
+Read environment variable
+"""
+
+print('ENvironment variable', os.environ[HOSTIP])
