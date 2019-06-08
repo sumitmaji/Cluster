@@ -7,7 +7,7 @@ class Certificate:
     def __init__(self):
         pass
         
-    def selfSigned(self):
+    def caCert(self):
         
         command = 'openssl req -new -x509 -nodes -keyout ca.key -out \
         ca.crt -days 3650 -passin pass:sumit -subj \
