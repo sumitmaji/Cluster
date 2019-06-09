@@ -14,6 +14,7 @@ command = "ifconfig {0} 2>/dev/null|awk '/inet addr:/ {{print $2}}'|sed 's/addr:
 os.environ[HOSTIP] = execute(command)[0]
 
 os.environ[WORKDIR] = '/export/tmp'
+os.environ[WORKSPACE] = 'workspace'
 os.environ[SERVER_DNS] = 'master.cloud.com,node01.cloud.com,kubernetes.default.svc,kubernetes.default,kubernetes,kubernetes.default.svc.cloud,kubernetes.default.svc.cloud.uat,localhost,master,node01'
 os.environ[SERVER_IP] = '11.0.0.1,11.0.0.2,172.18.0.1,127.0.0.1,192.168.1.7,192.168.1.1,192.168.1.2,192.168.1.3,192.168.1.4,192.168.1.5,192.168.1.6,192.168.1.8,192.168.1.9,192.168.1.10,192.168.1.11'
 os.environ[SERVERS] = '11.0.0.2:node01.cloud.com'
