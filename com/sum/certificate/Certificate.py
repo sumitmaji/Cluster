@@ -102,3 +102,56 @@ subjectAltName = @alt_names
         #Verify a Private Key Matches a Certificate
         command = 'openssl x509 -noout -text -in {0}.crt'.format(hostname)
         execute(command)
+        
+    def peerCert(self, ip, hostName, fileName, type):
+        
+        hostName = '{0}-{1}'.format(hostName, fileName)
+    
+        keyUsage = ''
+        if(type == 'server'):
+            keyUsage='extendedKeyUsage = clientAuth,serverAuth'
+        else:
+            keyUsage='extendedKeyUsage = clientAuth'
+            fileName='{0}-client'.format(fileName)
+        
+        content = """[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+"""
+        
+        content = content + '{0}\n'.format(keyUsage)
+        
+        if(type == 'server'):
+            content = content + 'subjectAltName = IP:{0}, DNS:{1}'.format(ip, hostName)
+            
+        writeContentToFile(fileName+'-openssl.cnf',content)
+        
+        #Create a private key
+        command = 'openssl genrsa -out {0}.key 2048'.format(hostName)
+        execute(command)
+        
+        #Create CSR for the node
+        command = 'openssl req -new -key {0}.key -subj "/CN={1}" \
+        -out {0}.csr -config {2}-openssl.cnf'.format(hostName, ip, fileName)
+        execute(command)
+        
+        #Create a self signed certificate
+        command = 'openssl x509 -req -in {0}.csr -CA ca.crt -CAkey ca.key \
+        -CAcreateserial -out {0}.crt -days 10000 -extensions v3_req \
+        -extfile {1}-openssl.cnf'.format(hostName, fileName)
+        execute(command)
+        
+        
+        #Copy ca.crt to crt
+        command = 'cat ca.crt >> {0}.crt'.format(hostName)
+        execute(command)
+        
+        #Verify a Private Key Matches a Certificate
+        command = 'openssl x509 -noout -text -in {0}.crt'.format(hostName)
+        execute(command)
+        
+        
