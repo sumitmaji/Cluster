@@ -1,7 +1,7 @@
 from com.sum.certificate.Certificate import Certificate
 from constants import ETCD_CLUSTERS_CERTS, WORKERS, NODES, WORKDIR, WORKSPACE;
 import os;
-from util import writeContentToFile, downloadFile;
+from util import writeContentToFile, downloadFile, execute;
 
 class Cluster:
 
@@ -57,4 +57,20 @@ class Cluster:
             downloadFile('https://github.com/coreos/etcd/releases/download/v3.2.18/etcd-v3.2.18-linux-amd64.tar.gz', 'etcd-v3.2.18-linux-amd64.tar.gz')
             downloadFile('https://github.com/coreos/flannel/releases/download/v0.10.0/flannel-v0.10.0-linux-amd64.tar.gz', 'flannel-v0.10.0-linux-amd64.tar.gz')
             
+        
+        if(not os.path.exists('/opt/kubernetes')):
+            execute('tar -xf kubernetes-server-linux-amd64.tar.gz -C /opt/')
+            
+
+        execute('cp /opt/kubernetes/server/bin/hyperkube /usr/local/bin')
+        execute('cp /opt/kubernetes/server/bin/kubeadm /usr/local/bin')
+        execute('cp /opt/kubernetes/server/bin/kube-apiserver /usr/local/bin')
+        execute('cp /opt/kubernetes/server/bin/kubelet /usr/local/bin')
+        execute('cp /opt/kubernetes/server/bin/kube-proxy /usr/local/bin')
+        execute('cp /opt/kubernetes/server/bin/kubectl /usr/local/bin')
+        execute('mkdir -p /var/lib/{kube-controller-manager,kubelet,kube-proxy,kube-scheduler}')
+        execute('mkdir -p /etc/{kubernetes,sysconfig}')
+        execute('mkdir -p /etc/kubernetes/manifests')        
+        
+        os.chdir('../')
         
